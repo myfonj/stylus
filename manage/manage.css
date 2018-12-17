@@ -1,8 +1,8 @@
 :root {
   --icon-size: 20px;
-  --narrow-column: 60px;
+  --narrow-column: 75px;
   --header-height: 40px;
-  --toolbar-height: 35px;
+  --toolbar-height: 60px;
   --entry-header-height: 25px;
   --onoffswitch-width: 60px;
 }
@@ -119,19 +119,16 @@ a:hover {
   vertical-align: bottom;
 }
 
-#main-header a {
-  font-size: .7em;
-  color: #999;
-  text-decoration: none;
-}
-
-#main-header a:hover {
+#main-header a:hover,
+#main-actions a:hover svg {
   color: hsla(180, 50%, 50%, 1);
+  fill: hsla(180, 50%, 50%, 1);
 }
 
 #main-header:lang(ja) {
   font-weight: normal;
 }
+
 
 #installed .entry-header {
   background: #eee;
@@ -291,10 +288,16 @@ a:hover {
   padding: 2px;
 }
 
-.targets .target img {
+.targets .target img,
+.targets .target svg {
   max-width: var(--icon-size);
   max-height: var(--icon-size);
   width: var(--icon-size);
+}
+
+#installed:not(.has-favicons) .targets img,
+#installed.has-favicons .targets img[src] + svg {
+  display: none;
 }
 
 #installed.faviconsGray .target img {
@@ -632,8 +635,12 @@ details.applies-to-extra[open] {
   margin-right: 20px;
 }
 
+#search-wrapper {
+  width: 30%;
+}
+
 #search {
-  width: 15vw;
+  width: calc(100% - var(--icon-size) * 1.4);
 }
 
 #search-help {
@@ -794,21 +801,6 @@ details.applies-to-extra[open] {
   /* background-color: #3e8e41; */
 }
 
-/* sort font */
-@font-face {
-  font-family: 'sorticon';
-  src: url('data:application/x-font-ttf;base64,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') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  unicode-range: U+21E9;
-}
-
-#manage.sort {
-  font-family: 'sorticon', Arial;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 @keyframes fadein {
   from {
     opacity: 0;
@@ -836,7 +828,12 @@ details.applies-to-extra[open] {
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
+  #installed .entry,
+  #installed .entry-col,
+  #installed .entry-header {
+    display: block;
+  }
   .entry-actions {
     white-space: normal;
   }
