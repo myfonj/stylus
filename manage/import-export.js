@@ -6,10 +6,10 @@ const STYLISH_DUMP_FILE_EXT = '.txt';
 const STYLUS_BACKUP_FILE_EXT = '.json';
 
 onDOMready().then(() => {
-  $('#file-all-styles').onclick = exportToFile;
-  $('#unfile-all-styles').onclick = () => {
-    importFromFile({fileTypeFilter: STYLUS_BACKUP_FILE_EXT});
-  };
+  // $('#file-all-styles').onclick = exportToFile;
+  // $('#unfile-all-styles').onclick = () => {
+  //   importFromFile({fileTypeFilter: STYLUS_BACKUP_FILE_EXT});
+  // };
 
   Object.assign(document.body, {
     ondragover(event) {
@@ -296,38 +296,36 @@ function importFromString(jsonString) {
 }
 
 
-function exportToFile() {
-  API.getAllStyles().then(styles => {
-    // https://crbug.com/714373
-    document.documentElement.appendChild(
-      $create('iframe', {
-        onload() {
-          const text = JSON.stringify(styles, null, '\t');
-          const type = 'application/json';
-          this.onload = null;
-          this.contentDocument.body.appendChild(
-            $create('a', {
-              href: URL.createObjectURL(new Blob([text], {type})),
-              download: generateFileName(),
-              type,
-            })
-          ).dispatchEvent(new MouseEvent('click'));
-        },
-        // we can't use display:none as some browsers are ignoring such iframes
-        style: `
-          all: unset;
-          width: 0;
-          height: 0;
-          position: fixed;
-          opacity: 0;
-          border: none;
-          `.replace(/;/g, '!important;'),
-      })
-    );
+function exportToFile(styles) {
+  // https://crbug.com/714373
+  document.documentElement.appendChild(
+    $create('iframe', {
+      onload() {
+        const text = JSON.stringify(styles, null, '\t');
+        const type = 'application/json';
+        this.onload = null;
+        this.contentDocument.body.appendChild(
+          $create('a', {
+            href: URL.createObjectURL(new Blob([text], {type})),
+            download: generateFileName(),
+            type,
+          })
+        ).dispatchEvent(new MouseEvent('click'));
+      },
+      // we can't use display:none as some browsers are ignoring such iframes
+      style: `
+        all: unset;
+        width: 0;
+        height: 0;
+        position: fixed;
+        opacity: 0;
+        border: none;
+        `.replace(/;/g, '!important;'),
+    })
+  );
     // we don't remove the iframe or the object URL because the browser may show
     // a download dialog and we don't know how long it'll take until the user confirms it
     // (some browsers like Vivaldi can't download if we revoke the URL)
-  });
 
   function generateFileName() {
     const today = new Date();
