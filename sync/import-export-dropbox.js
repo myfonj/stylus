@@ -1,6 +1,7 @@
 /* global messageBox Dropbox createZipFileFromText readZipFileFromBlob
   launchWebAuthFlow getRedirectUrlAuthFlow importFromString resolve
   $ $create t chromeLocal API getOwnTab */
+/* exported exportDropbox */
 'use strict';
 
 const DROPBOX_API_KEY = 'zg52vphuapvpng9';
@@ -48,7 +49,7 @@ function uploadFileDropbox(client, stylesText) {
   return client.filesUpload({path: '/' + DROPBOX_FILE, contents: stylesText});
 }
 
-$('#sync-dropbox-export').onclick = () => {
+function exportDropbox(styles) {
   const mode = localStorage.installType;
   const title = t('syncDropboxStyles');
   const text = mode === 'normal' ? t('connectingDropbox') : t('connectingDropboxNotAllowed');
@@ -72,10 +73,10 @@ $('#sync-dropbox-export').onclick = () => {
       }
       return client.filesDelete({path: '/' + DROPBOX_FILE});
     })
-    // file deleted with success, get styles and create a file
+    // file deleted with success, process styles and create a file
     .then(() => {
       messageProgressBar({title: title, text: t('gettingStyles')});
-      return API.getAllStyles().then(styles => JSON.stringify(styles, null, '\t'));
+      return JSON.stringify(styles, null, '\t');
     })
     // create zip file
     .then(stylesText => {
@@ -124,7 +125,7 @@ $('#sync-dropbox-export').onclick = () => {
 
 $('#sync-dropbox-import').onclick = () => {
   const mode = localStorage.installType;
-  const title = t('retrieveDropboxSync');
+  const title = t('syncDropboxStyles');
   const text = mode === 'normal' ? t('connectingDropbox') : t('connectingDropboxNotAllowed');
   messageProgressBar({title, text});
   if (mode !== 'normal') return;
