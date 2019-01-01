@@ -7,9 +7,9 @@ const STYLUS_BACKUP_FILE_EXT = '.json';
 
 onDOMready().then(() => {
   // $('#file-all-styles').onclick = exportToFile;
-  // $('#unfile-all-styles').onclick = () => {
-  //   importFromFile({fileTypeFilter: STYLUS_BACKUP_FILE_EXT});
-  // };
+  $('#unfile-all-styles').onclick = () => {
+    importFromFile({fileTypeFilter: STYLUS_BACKUP_FILE_EXT});
+  };
 
   Object.assign(document.body, {
     ondragover(event) {
