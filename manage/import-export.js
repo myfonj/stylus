@@ -6,7 +6,7 @@ const STYLISH_DUMP_FILE_EXT = '.txt';
 const STYLUS_BACKUP_FILE_EXT = '.json';
 
 onDOMready().then(() => {
-  // $('#file-all-styles').onclick = exportToFile;
+  $('#file-all-styles').onclick = () => API.getAllStyles().then(styles => exportToFile(styles));
   $('#unfile-all-styles').onclick = () => {
     importFromFile({fileTypeFilter: STYLUS_BACKUP_FILE_EXT});
   };
