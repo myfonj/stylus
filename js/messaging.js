@@ -10,13 +10,16 @@ const VIVALDI = Boolean(chrome.app) && navigator.userAgent.includes('Vivaldi');
 // const ANDROID = !chrome.windows;
 let FIREFOX = !chrome.app && parseFloat(navigator.userAgent.match(/\bFirefox\/(\d+\.\d+)|$/)[1]);
 
-if (!CHROME && !chrome.browserAction.openPopup) {
+// browser is undefined when using devTools device toolbar (in Chrome) to emulate mobile devices
+const browserApi = typeof browser === 'undefined' ? chrome : browser;;
+
+if (browserApi && !CHROME && !chrome.browserAction.openPopup) {
   // in FF pre-57 legacy addons can override useragent so we assume the worst
   // until we know for sure in the async getBrowserInfo()
   // (browserAction.openPopup was added in 57)
-  FIREFOX = browser.runtime.getBrowserInfo ? 51 : 50;
+  FIREFOX = browserApi.runtime.getBrowserInfo ? 51 : 50;
   // getBrowserInfo was added in FF 51
-  Promise.resolve(FIREFOX >= 51 ? browser.runtime.getBrowserInfo() : {version: 50}).then(info => {
+  Promise.resolve(FIREFOX >= 51 ? browserApi.runtime.getBrowserInfo() : {version: 50}).then(info => {
     FIREFOX = parseFloat(info.version);
     document.documentElement.classList.add('moz-appearance-bug', FIREFOX && FIREFOX < 54);
   });
